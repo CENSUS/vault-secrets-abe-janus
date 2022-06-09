@@ -1,0 +1,8 @@
+# Ignore the ABE Binary
+abe
+
+.vscode
+other/docker/vault/config/data 
+other/docker/vault/config/certificates 
+other/docker/vault/config/vault_operator_secrets.json
+

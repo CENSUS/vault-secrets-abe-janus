@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  vault:
+    container_name: vault-abe
+    image: vault-abe:latest
+    ports:
+      - "8200:8200"
+    volumes:
+      - "./vault/config:/home/vault/config:rw"
+    entrypoint: /home/vault/config/entrypoint.sh
+    networks:
+      - vault
+networks:
+  vault:
+    driver: bridge
