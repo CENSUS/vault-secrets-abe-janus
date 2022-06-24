@@ -16,13 +16,16 @@ RUN go mod download
 
 COPY / .
 
+WORKDIR /build/libraries
+
 RUN set -eux; \
-    cd libraries && \
     tar -zxvf pbc.tar.gz && \
     cd pbc-0.5.14 && \
     ./configure && \
     make && \
     make install
+
+WORKDIR /build
 
 RUN mkdir -p /build/bin \
     && go build -ldflags "-X abe/plugin.sa_enabled=$sa_enabled" -o /build/bin/abe . \
@@ -38,19 +41,21 @@ RUN apk add bash openssl jq
 RUN set -eux; \
     apk add --no-cache musl build-base flex bison gmp-dev
 
+WORKDIR /tmp/libraries
+
+COPY --from=builder /build/libraries .
+
 RUN set -eux; \
-    mkdir temp && cd temp && mkdir pbc && \
-    wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz -O pbc.tar.gz && \
     tar -zxvf pbc.tar.gz && \
     cd pbc-0.5.14 && \
     ./configure && \
     make && \
     make install
 
+WORKDIR /
+
 RUN export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib
 RUN export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib 
-
-# RUN cp /usr/local/lib/* /usr/lib/
 
 ENV GLIBC_REPO=https://github.com/sgerrand/alpine-pkg-glibc
 ENV GLIBC_VERSION=2.32-r0
