@@ -17,8 +17,7 @@ RUN go mod download
 COPY / .
 
 RUN set -eux; \
-    mkdir temp && cd temp && mkdir pbc && \
-    wget https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz -O pbc.tar.gz && \
+    cd libraries && \
     tar -zxvf pbc.tar.gz && \
     cd pbc-0.5.14 && \
     ./configure && \
